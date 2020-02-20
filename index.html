@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+        <script src="js/converter.js"></script>
+        <script src="lib/jszip.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Manjari&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="style.css">
+        <link rel="icon" href="image/logo.png" />
+        <title>LaTeX to EPUB & PDF Converter</title>
+    </head>
+
+    <body>
+        <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-labelledby="modalScrollable" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title">How It Works?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <h5>Convert & Download as EPUB</h5>
+                        <ul>
+                            <li>Type in LaTeX. Next to the text area, it shows how it looks on EPUB.</li>
+                            <li>Click to "Convert & Download as EPUB" and download LaTeX as PDF via the browser.</li>
+                            <li>Type a title, an author and select an image for your EPUB.</li>
+                            <li>Click the "Download" button and the conversion process begins.</li>
+                            <li>While that process it creates images reference HTML file via image file location.</li>
+                            <li>Converts LaTeX to HTML file.</li>
+                            <li>Creates obf file for files' references.</li>
+                            <li>And finally, zips all files into EPUB and download starts automatically.</li>
+                        </ul>
+                        <h5>Print as PDF</h5>
+                        <ul>
+                            <li>Type in LaTeX. Next to the text area, it shows how it looks on PDF.</li>
+                            <li>Click to "Print as PDF" and download LaTeX as PDF via the browser.</li>
+                        </ul>
+                        <h5>Source Codes and Libraries</h5>
+                        <ul>
+                            <li><a href="https://github.com/onursert/LaTeXConverter">Source Codes</a></li>
+                            <li><a href="https://getbootstrap.com/">Bootstrap</a></li>
+                            <li><a href="https://github.com/michael-brade/LaTeX.js">LaTeX.js</a></li>
+                            <li><a href="https://github.com/Stuk/jszip">JSZip</a></li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEPUB" tabindex="-1" role="dialog" aria-labelledby="modalScrollable" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title">Convert & Download as EPUB</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <div class="input-group mb-3">
+                            <input type="text" id="title" class="form-control" placeholder="EPUB Title">
+                            <input type="text" id="author" class="form-control" placeholder="EPUB Author">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input id="getCover" type="file" accept="image/*" onchange="getCoverAndCreateFrontCoverHtml()" style="display:none">
+                            <div class="input-group-prepend">
+                                <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('getCover').click();">Select</button>
+                            </div>
+                            <input id="coverLoc" type="text" class="form-control" placeholder="EPUB Cover">
+                        </div>
+                        <p class="text-center">Use <a type="button" class="btn btn-success" href="https://play.google.com/store/apps/details?id=com.github.onursert.bookpub" target="_blank">BookPub</a> for open EPUB properly</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-dark" type="button" onclick="latexToEpub()">Download</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalPDF" tabindex="-1" role="dialog" aria-labelledby="modalScrollable" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title">Print as PDF</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <p class="text-center">Use <a type="button" class="btn btn-success" href="https://play.google.com/store/apps/details?id=com.github.onursert.leaf" target="_blank">Leaf</a> for open PDF properly</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-dark" type="button" onclick="document.getElementById('showHTMLiframeId').contentWindow.print();">Print</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="full-height">
+            <div class="full-container container-fluid">
+                <div class="row my-2">
+                    <div class="col-xl-auto">
+                        <h1 class="mt-1">LaTeX to EPUB & PDF Converter</h1>
+                    </div>
+                    <div class="col text-right">
+                        <a type="button" class="btn btn-success mt-1" href="https://play.google.com/store/apps/details?id=com.github.onursert.bookpub" target="_blank">BookPub: EPUB Reader on Google Play</a>
+                        <a type="button" class="btn btn-success mt-1" href="https://play.google.com/store/apps/details?id=com.github.onursert.leaf" target="_blank">Leaf: PDF Reader on Google Play</a>
+                        <a type="button" class="btn btn-info mt-1" data-toggle="modal" data-target="#modalInfo" href="">How It Works?</a>
+                    </div>
+                </div>
+
+                <div class="full-row row my-2">
+                    <div class="col-xl-6 mt-1">
+                        <textarea id="latexText" class="form-control h-100 w-100" placeholder="Type in LaTeX" oninput="showHTMLFunction()"></textarea>
+                    </div>
+                    <div class="col-xl-6 mt-1">
+                        <iframe id="showHTMLiframeId" class="h-100 w-100"></iframe>
+                    </div>
+                </div>
+
+                <div class="row my-2">
+                    <div class="col-xl-auto">
+                        <a type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#modalEPUB" href="">Convert & Download as EPUB</a>
+                        <a type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#modalPDF" href="">Print as PDF</a>
+                    </div>
+                    <div class="col text-right">
+                        <a type="button" class="btn btn-outline-dark mt-1" href="https://onursert.org/" target="_blank">Developer: Onur Sert</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="js/showHTMLjs.js"></script>
+    </body>
+</html>
