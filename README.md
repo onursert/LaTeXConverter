@@ -1,6 +1,6 @@
  # LaTeXConverter
 LaTeX to EPUB & PDF Converter (with LaTeX.js and JSZip) - 2020 (JavaScript)<br>
-<a href="https://latexconverter.onursert.org/">LaTeX to EPUB & PDF</a>
+<h3>DEPRECATED</h3>
 
 <h5>Convert & Download as EPUB</h5>
 <ul>
